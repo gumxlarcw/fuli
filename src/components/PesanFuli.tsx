@@ -80,7 +80,8 @@ function JejakKerja({ p }: { p: Pesan }) {
   const berjalan = p.keadaan === "mengalir";
   const sudahMenulis = p.teks.length > 0;
   const langkah = p.tahap;
-  if (!berjalan && langkah.length === 0 && !p.nalar) return null;
+  // Saat gagal, nalar berisi pesan galat yang sudah tampil di gelembung; jejak kosong tidak perlu disebut.
+  if (p.keadaan === "gagal" || (!berjalan && langkah.length === 0 && !p.nalar)) return null;
 
   if (berjalan && !sudahMenulis) {
     return (
