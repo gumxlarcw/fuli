@@ -70,6 +70,19 @@ function rupiah(n: number) {
 
 export type FormatSumbu = KonfigGrafik["y_axis"]["format"];
 
+/**
+ * Tanda persen hanya bila sumbernya menyebut persen. Rentang 0 sampai 100 saja tidak cukup:
+ * IPM 69,8 adalah indeks, dan label "69,8%" berarti salah satuan.
+ */
+export function formatTerbukti(f: FormatSumbu, teksSumber: Array<string | null | undefined>): FormatSumbu {
+  if (f !== "percentage") return f;
+  const teks = teksSumber.filter(Boolean).join(" ");
+  // "(2022=100)" menandai indeks walau judulnya menyebut laju.
+  if (/=\s*100\b/.test(teks)) return "index";
+  const bukti = /persen|%|tingkat pengangguran|tingkat partisipasi|\btpt\b|\btpak\b|\blaju\b|pertumbuhan/i;
+  return bukti.test(teks) ? f : "number";
+}
+
 export function formatSumbu(n: number, f: FormatSumbu): string {
   if (f === "currency") return rupiah(n);
   if (f === "percentage") return `${n.toLocaleString(LOKAL, { maximumFractionDigits: 1 })}%`;

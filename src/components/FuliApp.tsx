@@ -428,7 +428,9 @@ export function FuliApp() {
       };
 
       henti.current = alirkanPesan(id, utasIni, teks, {
-        padaTahap: (d) => {
+        padaTahap: (asli) => {
+          // Label backend ini istilah internal; pengguna membaca kata yang biasa.
+          const d = { ...asli, message: asli.message?.replace("Analisis DNA data", "Mengenali bentuk data") };
           const urut = URUT_TAHAP[d.stage];
           if (urut) adegan.current?.aturTahap(urut);
           setTahapAktif(d.message || "");

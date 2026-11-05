@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import type { DataTabel, KonfigGrafik, MetaUi } from "@/lib/jenis";
 import { profileChartData, profileToChartConfig } from "@/lib/chartDataProfiler";
-import { formatSel, keCsv, keTsv, kodeSel, kolomAngka, namaBerkas, tautanAman, urutkanBaris } from "@/lib/olah";
+import { formatSel, formatTerbukti, keCsv, keTsv, kodeSel, kolomAngka, namaBerkas, tautanAman, urutkanBaris } from "@/lib/olah";
 import type { Identitas } from "@/lib/kurir";
 import { ambilDokumen } from "@/lib/kurir";
 import { Grafik } from "./Grafik";
@@ -167,11 +167,25 @@ function LembarTabel({ t, tutup }: { t: DataTabel; tutup: () => void }) {
 function BlokTabel({ t, konfig }: { t: DataTabel; konfig?: KonfigGrafik | null }) {
   const baris = useMemo(() => urutkanBaris(t, t.rows, t.columns), [t]);
   const konfigAkhir = useMemo(() => {
-    if (konfig?.should_render && konfig.series?.length) return konfig;
+    const pastikanSatuan = (k: KonfigGrafik): KonfigGrafik => ({
+      ...k,
+      y_axis: {
+        ...k.y_axis,
+        format: formatTerbukti(k.y_axis?.format, [
+          t.title,
+          k.chart_title,
+          k.chart_subtitle,
+          k.y_axis?.label,
+          ...t.columns,
+          ...k.series.map((s) => s.label || s.column),
+        ]),
+      },
+    });
+    if (konfig?.should_render && konfig.series?.length) return pastikanSatuan(konfig);
     if (konfig === null || baris.length <= 2) return null;
     try {
       const k = profileToChartConfig(profileChartData(t.columns, baris), t.title || undefined) as KonfigGrafik;
-      return k?.should_render && k.series?.length ? k : null;
+      return k?.should_render && k.series?.length ? pastikanSatuan(k) : null;
     } catch {
       return null;
     }
