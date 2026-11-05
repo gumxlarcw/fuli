@@ -40,8 +40,8 @@
   --seri-6: #d4608f;
 
   /* Huruf */
-  --huruf-judul: "Piazzolla Variable", "Iowan Old Style", Georgia, serif;
-  --huruf-teks: "Source Sans 3 Variable", "Segoe UI", system-ui, sans-serif;
+  --font-judul: "Piazzolla Variable", "Iowan Old Style", Georgia, serif;
+  --font-teks: "Source Sans 3 Variable", "Segoe UI", system-ui, sans-serif;
 
   /* Skala huruf */
   --uk-12: 0.75rem;

@@ -19,7 +19,7 @@ body {
 body {
   background: var(--latar);
   color: var(--tinta);
-  font-family: var(--huruf-teks);
+  font-family: var(--font-teks);
   font-size: 1.0625rem;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
@@ -173,7 +173,7 @@ a {
 
 /* Merek */
 .merek {
-  font-family: var(--huruf-judul);
+  font-family: var(--font-judul);
   font-weight: 800;
   font-size: var(--uk-28);
   line-height: 1;
@@ -269,7 +269,7 @@ a {
 }
 
 .pembuka h1 {
-  font-family: var(--huruf-judul);
+  font-family: var(--font-judul);
   font-weight: 800;
   font-size: var(--uk-64);
   line-height: 0.98;
@@ -803,7 +803,7 @@ a {
 .teks-fuli h2,
 .teks-fuli h3,
 .teks-fuli h4 {
-  font-family: var(--huruf-judul);
+  font-family: var(--font-judul);
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.01em;
@@ -949,7 +949,7 @@ a {
 }
 
 .blok-data h3 {
-  font-family: var(--huruf-judul);
+  font-family: var(--font-judul);
   font-weight: 700;
   font-size: var(--uk-18);
   line-height: 1.25;
@@ -1244,7 +1244,7 @@ a {
 }
 
 .donat-persen {
-  font-family: var(--huruf-judul);
+  font-family: var(--font-judul);
   font-size: 22px;
   font-weight: 700;
   fill: var(--tinta);
@@ -1577,7 +1577,7 @@ a {
 
 .lembar-kepala h3 {
   padding-top: 8px;
-  font-family: var(--huruf-judul);
+  font-family: var(--font-judul);
   font-weight: 700;
   font-size: var(--uk-21);
   line-height: 1.2;
@@ -1653,7 +1653,7 @@ a {
 }
 
 .laci h2 {
-  font-family: var(--huruf-judul);
+  font-family: var(--font-judul);
   font-weight: 700;
   font-size: var(--uk-21);
 }
