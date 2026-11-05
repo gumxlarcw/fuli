@@ -1,0 +1,132 @@
+/*
+ * Token Fuli. Warna diambil dari buah pala yang terbelah:
+ * daging buah pucat, jala merah (fuli), biji cokelat gelap, fuli kering yang menguning.
+ * Konsep tata letak: satu ruang tanya; biji berjala hidup di samping percakapan
+ * dan menyala mengikuti tahap kerja jawaban.
+ */
+:root {
+  color-scheme: light;
+
+  /* Permukaan: daging buah */
+  --latar: #edefd2;
+  --permukaan: #f8f9e8;
+  --permukaan-2: #e0e3bc;
+  --garis: #c3c697;
+  --buah-isi: #f6f7e2;
+  --buah-tepi: #d6b44a;
+
+  /* Tinta: biji */
+  --tinta: #2a1014;
+  --tinta-2: #5b4044;
+
+  /* Aksen: fuli */
+  --aksen: #be1128;
+  --aksen-isi: #be1128;
+  --aksen-tekan: #8f0a1e;
+  --di-aksen: #fff6e9;
+
+  /* Pendukung */
+  --kering: #9a5200;
+  --daun: #1f5b45;
+  --laut: #0f5e7a;
+  --bidang-kering: #f4e3b8;
+
+  /* Seri grafik: lolos validator palet (urutan tetap, buta warna, kontras 3:1) */
+  --seri-1: #c2152d;
+  --seri-2: #1c84ad;
+  --seri-3: #c67d00;
+  --seri-4: #1f9068;
+  --seri-5: #8d5ec2;
+  --seri-6: #d4608f;
+
+  /* Huruf */
+  --huruf-judul: "Piazzolla Variable", "Iowan Old Style", Georgia, serif;
+  --huruf-teks: "Source Sans 3 Variable", "Segoe UI", system-ui, sans-serif;
+
+  /* Skala huruf */
+  --uk-12: 0.75rem;
+  --uk-14: 0.875rem;
+  --uk-16: 1rem;
+  --uk-18: 1.125rem;
+  --uk-21: 1.3125rem;
+  --uk-28: 1.75rem;
+  --uk-42: 2.625rem;
+  --uk-64: clamp(2.75rem, 1.2rem + 5.4vw, 4.5rem);
+
+  /* Jarak */
+  --j-1: 4px;
+  --j-2: 8px;
+  --j-3: 12px;
+  --j-4: 16px;
+  --j-5: 24px;
+  --j-6: 32px;
+  --j-7: 48px;
+  --j-8: 72px;
+
+  /* Bentuk. Biji tidak pernah bulat sempurna: tiap sudut punya jari-jari sendiri. */
+  --r-kecil: 10px;
+  --r-sedang: 16px;
+  --r-besar: 26px;
+  --r-biji: 58% 42% 54% 46% / 56% 50% 50% 44%;
+  --r-pesan: 22px 22px 6px 22px;
+
+  /* Gerak */
+  --serat: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --cepat: 160ms;
+  --sedang: 320ms;
+  --lambat: 900ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --latar: #1f0d10;
+    --permukaan: #2c1418;
+    --permukaan-2: #3a1c21;
+    --garis: #5a343a;
+    --buah-isi: #2a1216;
+    --buah-tepi: #7a2a30;
+    --tinta: #f3f1d7;
+    --tinta-2: #cdc1ab;
+    --aksen: #ff7a7c;
+    --aksen-isi: #d8202f;
+    --aksen-tekan: #ef3a46;
+    --di-aksen: #fff6e9;
+    --kering: #f2a33c;
+    --daun: #8fd3ae;
+    --laut: #7cc8e2;
+    --bidang-kering: #43281a;
+    --seri-1: #e64a50;
+    --seri-2: #1f96bd;
+    --seri-3: #c58710;
+    --seri-4: #27a06f;
+    --seri-5: #9a70e0;
+    --seri-6: #d85f98;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --latar: #1f0d10;
+  --permukaan: #2c1418;
+  --permukaan-2: #3a1c21;
+  --garis: #5a343a;
+  --buah-isi: #2a1216;
+  --buah-tepi: #7a2a30;
+  --tinta: #f3f1d7;
+  --tinta-2: #cdc1ab;
+  --aksen: #ff7a7c;
+  --aksen-isi: #d8202f;
+  --aksen-tekan: #ef3a46;
+  --di-aksen: #fff6e9;
+  --kering: #f2a33c;
+  --daun: #8fd3ae;
+  --laut: #7cc8e2;
+  --bidang-kering: #43281a;
+  --seri-1: #e64a50;
+  --seri-2: #1f96bd;
+  --seri-3: #c58710;
+  --seri-4: #27a06f;
+  --seri-5: #9a70e0;
+  --seri-6: #d85f98;
+}
