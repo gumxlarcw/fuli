@@ -246,6 +246,7 @@ function PesanFuliInti({
 
   return (
     <motion.article className="pesan-jawab" initial={baru ? { opacity: 0, y: 10 } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+      <div className="pesan-merek"><img src="/fuli-tanda.svg" alt="" /><span>Fuli</span></div>
       <JejakKerja p={p} />
       {teks && (
         <div className="teks-fuli" data-mengalir={!selesai}>

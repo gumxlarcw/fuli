@@ -1,5 +1,11 @@
 /** Ikon garis 20 piksel. Hanya yang dipakai, tanpa pustaka ikon. */
 const JALUR: Record<string, string> = {
+  obrolan: "M4 4h12v9H9l-4 3v-3H4z",
+  buku: "M10 5c-2-2-5-2-7-1v11c3-1 5-1 7 1 2-2 4-2 7-1V4c-2-1-5-1-7 1Zm0 0v11",
+  grafik: "M4 4v12h12M7 12V9M11 12V6M15 12V3",
+  penduduk: "M10 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM4 17v-1a6 6 0 0 1 12 0v1M15 4a3 3 0 0 1 0 6",
+  kompas: "M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3-11-2 4-4 2 2-4 4-2Z",
+  panah: "M4 10h12M11 5l5 5-5 5",
   riwayat: "M4 6h12M4 10h12M4 14h7",
   tambah: "M10 4v12M4 10h12",
   matahari: "M10 6.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7ZM10 2.5v1.6M10 15.9v1.6M2.5 10h1.6M15.9 10h1.6M4.7 4.7l1.1 1.1M14.2 14.2l1.1 1.1M4.7 15.3l1.1-1.1M14.2 5.8l1.1-1.1",

@@ -15,6 +15,8 @@ const CSP = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Satu pekerja build menjaga pemakaian memori pada mesin fleet bersama.
+  experimental: { cpus: 1 },
   poweredByHeader: false,
   turbopack: { root: __dirname },
   async headers() {

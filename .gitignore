@@ -1,7 +1,8 @@
 node_modules/
 .next/
+*.tsbuildinfo
 .env*
 !.env.example
+tests/hasil/
 *.log
-*.tsbuildinfo
 next-env.d.ts

@@ -70,6 +70,48 @@
   --r-biji: 58% 42% 54% 46% / 56% 50% 50% 44%;
   --r-pesan: 22px 22px 6px 22px;
 
+  /* Panggung pala dan komposisi ruang tanya. */
+  --panggung: #8f0a1e;
+  --panggung-terang: #be1128;
+  --panggung-gelap: #4e0a19;
+  --di-panggung: #fff6e9;
+  --panggung-redup: #edc4bc;
+  --pala-gelap: #2b100c;
+  --pala-terang: #7a4228;
+  --jala-merah: #c30f2b;
+  --jala-kilap: #ff8d7a;
+  --cahaya-hangat: #fff0d6;
+  --cahaya-tepi: #ff3b4a;
+  --orbit: #e3c388;
+  --bayang: #2a1014;
+  --rel-lebar: 224px;
+  --rel-sempit: 192px;
+  --biji-chat: 84px;
+  --biji-chat-y: 244px;
+  --biji-ponsel: 112px;
+  --biji-ponsel-kanan: 104px;
+  --biji-ponsel-y: 150px;
+  --rel-biji-tinggi: 128px;
+  --panggung-ponsel-tinggi: 160px;
+  --pembuka-ponsel-atas: 264px;
+  --kepala-tinggi: 80px;
+  --uk-hero: clamp(3.1rem, 4.7vw, 4.75rem);
+  --uk-panggung: clamp(6rem, 13vw, 13rem);
+  --uk-merek: 2.5rem;
+  --uk-hero-ponsel: clamp(2.45rem, 10.5vw, 3.5rem);
+  --ruang-lebar: 1440px;
+  --kolom-lebar: 860px;
+  --sisi: clamp(24px, 3vw, 48px);
+  --sentuh: 44px;
+  --ikon-kecil: 36px;
+  --teksarea-maks: 168px;
+  --pengetik-tinggi: 72px;
+  --panggung-tinggi: 560px;
+  --panggung-lebar: 42%;
+  --panggung-jarak: 36px;
+  --bayang-lembut: 0 8px 32px color-mix(in srgb, var(--bayang) 6%, transparent);
+  --bayang-panggung: inset 0 0 90px color-mix(in srgb, var(--panggung-gelap) 30%, transparent);
+
   /* Gerak */
   --serat: cubic-bezier(0.2, 0.8, 0.2, 1);
   --cepat: 160ms;

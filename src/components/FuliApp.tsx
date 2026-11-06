@@ -16,10 +16,10 @@ import { Ikon } from "./Ikon";
 import { PesanFuli } from "./PesanFuli";
 
 const CONTOH = [
-  "Inflasi Kota Ternate bulan ini",
-  "Tingkat kemiskinan per kabupaten/kota",
-  "IPM Maluku Utara 5 tahun terakhir",
-  "Ekspor nikel Maluku Utara per bulan",
+  { judul: "Harga & inflasi", teks: "Inflasi Kota Ternate bulan ini", ikon: "grafik" },
+  { judul: "Kesejahteraan", teks: "Tingkat kemiskinan per kabupaten/kota", ikon: "penduduk" },
+  { judul: "Pembangunan manusia", teks: "IPM Maluku Utara 5 tahun terakhir", ikon: "buku" },
+  { judul: "Ekonomi & perdagangan", teks: "Ekspor nikel Maluku Utara per bulan", ikon: "kompas" },
 ];
 
 const URUT_TAHAP: Record<string, number> = {
@@ -81,7 +81,7 @@ function TombolTema({ tema, ganti }: { tema: TemaAdegan; ganti: () => void }) {
   );
 }
 
-function Pengetik({ kirim, henti, mengalir, fokusAwal, tanda }: { kirim: (t: string) => void; henti: () => void; mengalir: boolean; fokusAwal?: boolean; tanda: string }) {
+function Pengetik({ kirim, henti, mengalir, fokusAwal, tanda, siap = true }: { kirim: (t: string) => void; henti: () => void; mengalir: boolean; fokusAwal?: boolean; tanda: string; siap?: boolean }) {
   const [teks, setTeks] = useState("");
   const area = useRef<HTMLTextAreaElement>(null);
 
@@ -98,7 +98,7 @@ function Pengetik({ kirim, henti, mengalir, fokusAwal, tanda }: { kirim: (t: str
 
   const lepas = () => {
     const t = teks.trim();
-    if (!t || mengalir) return;
+    if (!t || mengalir || !siap) return;
     kirim(t);
     setTeks("");
   };
@@ -119,15 +119,20 @@ function Pengetik({ kirim, henti, mengalir, fokusAwal, tanda }: { kirim: (t: str
       }}
     >
       <textarea ref={area} rows={1} value={teks} onChange={(e) => setTeks(e.target.value)} onKeyDown={tombol} placeholder={tanda} aria-label="Tulis pertanyaan" maxLength={4000} />
+      <div className="pengetik-kaki">
+        <span><Ikon nama="dokumen" ukuran={16} /> Data BPS Maluku Utara</span>
+        <div className="pengetik-kirim"><kbd>Enter</kbd>
       {mengalir ? (
         <button type="button" className="tombol-biji" data-henti="true" onClick={henti} aria-label="Hentikan jawaban" title="Hentikan jawaban">
           <Ikon nama="henti" />
         </button>
       ) : (
-        <button type="submit" className="tombol-biji" disabled={!teks.trim()} aria-label="Kirim pertanyaan" title="Kirim pertanyaan">
+        <button type="submit" className="tombol-biji" disabled={!teks.trim() || !siap} aria-label="Kirim pertanyaan" title="Kirim pertanyaan">
           <Ikon nama="kirim" />
         </button>
       )}
+        </div>
+      </div>
     </form>
   );
 }
@@ -203,11 +208,16 @@ export function FuliApp() {
   const [laci, setLaci] = useState(false);
   const [tema, setTema] = useState<TemaAdegan>("light");
   const [webglGagal, setWebglGagal] = useState(false);
+  const [adeganSiap, setAdeganSiap] = useState(false);
+  const [gerakDikurangi, setGerakDikurangi] = useState(true);
   const [diBawah, setDiBawah] = useState(true);
   const [tahapAktif, setTahapAktif] = useState<string>("");
   const [dinilai, setDinilai] = useState(false);
   const [idBaru, setIdBaru] = useState<Set<string>>(() => new Set());
 
+  const tombolRiwayat = useRef<HTMLButtonElement>(null);
+  const dialogRiwayat = useRef<HTMLElement>(null);
+  const bingkai = useRef<HTMLDivElement>(null);
   const kanvas = useRef<HTMLCanvasElement>(null);
   const jangkar = useRef<HTMLDivElement>(null);
   const adegan = useRef<AdeganFuli | null>(null);
@@ -215,6 +225,7 @@ export function FuliApp() {
   const henti = useRef<AbortController | null>(null);
   const tungguSaran = useRef<ReturnType<typeof setTimeout>[]>([]);
   const lekat = useRef(true);
+  const tahapUrut = useRef(0);
   const utasRef = useRef<number | null>(null);
   utasRef.current = utasAktif;
 
@@ -231,11 +242,36 @@ export function FuliApp() {
   }, []);
 
   useEffect(() => {
-    if (!kanvas.current || !jangkar.current) return;
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const ubah = () => setGerakDikurangi(media.matches);
+    ubah();
+    media.addEventListener("change", ubah);
+    return () => media.removeEventListener("change", ubah);
+  }, []);
+
+  useEffect(() => {
+    if (!laci) return;
+    const sebelumnya = tombolRiwayat.current;
+    const tombol = (e: globalThis.KeyboardEvent) => {
+      if (e.key === "Escape") setLaci(false);
+      if (e.key !== "Tab") return;
+      const daftar = Array.from(dialogRiwayat.current?.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], [tabindex="0"]') || []);
+      const awal = daftar[0];
+      const akhir = daftar[daftar.length - 1];
+      if (e.shiftKey && document.activeElement === awal) { e.preventDefault(); akhir?.focus(); }
+      if (!e.shiftKey && document.activeElement === akhir) { e.preventDefault(); awal?.focus(); }
+    };
+    document.addEventListener("keydown", tombol);
+    return () => { document.removeEventListener("keydown", tombol); sebelumnya?.focus(); };
+  }, [laci]);
+
+  useEffect(() => {
+    setAdeganSiap(false);
+    setWebglGagal(false);
+    if (gerakDikurangi || !kanvas.current || !jangkar.current) return;
     let batal = false;
     let dibuat: AdeganFuli | null = null;
     const kurangi = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const awalMode = jangkar.current.closest(".aplikasi")?.getAttribute("data-modus") === "chat" ? "chat" : "hero";
     const awalTema = (document.documentElement.getAttribute("data-theme") as TemaAdegan) || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     import("./adegan/fuliScene")
       .then(({ buatAdeganFuli }) => {
@@ -244,8 +280,9 @@ export function FuliApp() {
           kanvas: kanvas.current,
           jangkar: jangkar.current,
           gerakDikurangi: kurangi,
-          tema: awalTema,
-          modus: awalMode,
+          tema: (document.documentElement.getAttribute("data-theme") as TemaAdegan) || awalTema,
+          modus: jangkar.current.closest(".aplikasi")?.getAttribute("data-modus") === "chat" ? "chat" : "hero",
+          padaSiap: () => setAdeganSiap(true),
           padaGagal: () => setWebglGagal(true),
         });
         adegan.current = dibuat;
@@ -256,17 +293,22 @@ export function FuliApp() {
       dibuat?.bersihkan();
       adegan.current = null;
     };
-  }, []);
+  }, [gerakDikurangi]);
 
-  useEffect(() => adegan.current?.aturModus(modus), [modus]);
-  useEffect(() => adegan.current?.aturTema(tema), [tema]);
+  useEffect(() => {
+    adegan.current?.aturModus(modus);
+  }, [modus, adeganSiap]);
+  useEffect(() => { bingkai.current?.style.setProperty("--gulir-pembuka", "0px"); }, [modus]);
+  useEffect(() => adegan.current?.aturTema(tema), [tema, adeganSiap]);
   useEffect(() => {
     adegan.current?.aturKerja(mengalir);
+    adegan.current?.aturTahap(tahapUrut.current);
     if (!mengalir) {
+      tahapUrut.current = 0;
       adegan.current?.aturTahap(0);
       setTahapAktif("");
     }
-  }, [mengalir]);
+  }, [mengalir, adeganSiap]);
 
   const muatUlangUtas = useCallback(async (i: Identitas) => {
     try {
@@ -432,7 +474,7 @@ export function FuliApp() {
           // Label backend ini istilah internal; pengguna membaca kata yang biasa.
           const d = { ...asli, message: asli.message?.replace("Analisis DNA data", "Mengenali bentuk data") };
           const urut = URUT_TAHAP[d.stage];
-          if (urut) adegan.current?.aturTahap(urut);
+          if (urut) { tahapUrut.current = urut; adegan.current?.aturTahap(urut); }
           setTahapAktif(d.message || "");
           ubah((x) => {
             const kunci = d.stage || d.message;
@@ -515,94 +557,63 @@ export function FuliApp() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="aplikasi" data-modus={modus} data-kerja={mengalir}>
-        <div className="buah" aria-hidden="true">
-          <div className="buah-kulit" />
-          <div className="buah-daging" />
+      <div ref={bingkai} className="aplikasi" data-modus={modus} data-kerja={mengalir} data-statis={gerakDikurangi || webglGagal}>
+        <div className="panggung" aria-hidden="true">
+          <span className="panggung-nama">fuli</span>
+          <div className="panggung-atas"><span>Berakar di Maluku Utara</span><span className="panggung-tanda">✳</span></div>
+          <div className="panggung-kaki"><span className="panggung-garis" /><p>Jala merah pala.<br />Asal nama Fuli.</p><span className="panggung-latin">Myristica fragrans</span></div>
         </div>
         <div className="rel-latar" aria-hidden="true" />
         <canvas ref={kanvas} className="kanvas" aria-hidden="true" />
         <div ref={jangkar} className="jangkar" aria-hidden="true">
-          {webglGagal && <img src={tema === "dark" ? "/fuli-tanda-gelap.svg" : "/fuli-tanda.svg"} alt="" />}
+          {(webglGagal || gerakDikurangi || !adeganSiap) && <img src={tema === "dark" ? "/fuli-tanda-gelap.svg" : "/fuli-tanda.svg"} alt="" />}
         </div>
 
         <header className="kepala">
-          <button type="button" className="kepala-merek" onClick={baru} aria-label="Fuli, percakapan baru">
-            <Merek />
-          </button>
+          <button type="button" className="kepala-merek merek-ponsel" onClick={baru} aria-label="Fuli, percakapan baru"><Merek /></button>
+          <div className="kepala-konteks"><span>Ruang tanya</span><span aria-hidden="true">/</span><strong>Maluku Utara</strong></div>
           <div className="kepala-aksi">
-            {modus === "chat" && (
-              <button type="button" className="tombol-ikon" onClick={baru} aria-label="Percakapan baru" title="Percakapan baru">
-                <Ikon nama="tambah" />
-              </button>
-            )}
-            {(utas.length > 0 || modus === "chat") && (
-              <button type="button" className="tombol-ikon" onClick={() => setLaci(true)} aria-label="Riwayat percakapan" title="Riwayat percakapan">
-                <Ikon nama="riwayat" />
-              </button>
-            )}
+            <span className="label-sumber"><Ikon nama="dokumen" ukuran={16} /> Bersumber dari BPS</span>
+            <button type="button" className="tombol-ikon aksi-ponsel" onClick={baru} aria-label="Percakapan baru" title="Percakapan baru"><Ikon nama="tambah" /></button>
+            <button ref={tombolRiwayat} type="button" className="tombol-ikon" onClick={() => setLaci(true)} aria-label="Riwayat percakapan" title="Riwayat percakapan"><Ikon nama="riwayat" /></button>
             <TombolTema tema={tema} ganti={gantiTema} />
           </div>
         </header>
 
-        <aside className="rel" aria-label="Riwayat percakapan" aria-hidden={modus === "hero"}>
+        <aside className="rel" aria-label="Percakapan">
           <div className="rel-atas">
-            <button type="button" className="kepala-merek" onClick={baru} tabIndex={modus === "hero" ? -1 : 0} aria-label="Fuli, percakapan baru">
-              <Merek />
-            </button>
-            <TombolTema tema={tema} ganti={gantiTema} />
+            <button type="button" className="kepala-merek" onClick={baru} aria-label="Fuli, percakapan baru"><Merek /></button>
+            <span className="rel-lokal">Maluku Utara</span>
           </div>
+          <button type="button" className="tombol-baru" onClick={baru}><Ikon nama="tambah" ukuran={18} /> Percakapan baru</button>
+          <div className="rel-pengantar"><Ikon nama="obrolan" ukuran={18} /><span>Ruang untuk rasa ingin tahu.</span></div>
           <div className="rel-biji" />
-          <p className="rel-tahap" aria-live="polite">
-            {mengalir ? tahapAktif || "Membaca pertanyaan" : "Siap menjawab"}
-          </p>
-          <button type="button" className="tombol-baru" onClick={baru} tabIndex={modus === "hero" ? -1 : 0}>
-            <Ikon nama="tambah" ukuran={18} /> Percakapan baru
-          </button>
-          <div className="rel-daftar">
-            <DaftarUtas utas={utas} aktif={utasAktif} pilih={(u) => id && bukaUtas(id, u.id)} hapus={hapus} />
-          </div>
-          <footer className="rel-kaki">
-            <a href={TAUTAN_WA} target="_blank" rel="noopener noreferrer">
-              Hubungi petugas BPS
-            </a>
-            <p>Fuli bisa keliru. Periksa angka penting di sumbernya.</p>
-          </footer>
+          {modus === "chat" && <p className="rel-tahap" aria-live="polite">{mengalir ? tahapAktif || "Membaca pertanyaan" : "Siap untuk pertanyaan berikutnya"}</p>}
+          <div className="rel-riwayat-judul"><span>Percakapan Anda</span><span>{utas.length > 0 ? utas.length : ""}</span></div>
+          <div className="rel-daftar"><DaftarUtas utas={utas} aktif={utasAktif} pilih={(u) => id && bukaUtas(id, u.id)} hapus={hapus} /></div>
+          <div className="rel-identitas"><img src="/fuli-tanda.svg" alt="" /><p>Fakta, Uraian,<br />dan Literasi Indikator.</p></div>
+          <footer className="rel-kaki"><a href={TAUTAN_WA} target="_blank" rel="noopener noreferrer"><Ikon nama="obrolan" ukuran={17} /> Hubungi petugas BPS <Ikon nama="keluar" ukuran={14} /></a><p>BPS Provinsi Maluku Utara</p></footer>
         </aside>
 
         {modus === "hero" ? (
-          <main className="pembuka">
+          <main className="pembuka" onScroll={(e) => bingkai.current?.style.setProperty("--gulir-pembuka", `${e.currentTarget.scrollTop}px`)}>
             <div className="pembuka-isi">
-              <h1>
-                <span>Tanya angka</span> <span>Maluku Utara.</span>
-              </h1>
-              <p className="pembuka-sub">Fuli mencari di data BPS Provinsi Maluku Utara, lalu menjelaskan artinya dengan bahasa sehari-hari.</p>
-              <Pengetik kirim={kirim} henti={hentikan} mengalir={mengalir} fokusAwal tanda="Tanyakan data Maluku Utara" />
+              <div className="sapa"><span className="sapa-tanda" aria-hidden="true">✳</span> Selamat datang di Fuli</div>
+              <h1>Kenali Maluku<br />Utara, lewat data.</h1>
+              <p className="pembuka-sub">Dari pertanyaan sederhana hingga cerita di balik angka. Telusuri data BPS Maluku Utara bersama Fuli.</p>
+              <Pengetik kirim={kirim} henti={hentikan} mengalir={mengalir} siap={!!id} tanda="Apa yang ingin Anda ketahui?" />
+              <div className="contoh-judul"><span>Mulai dari rasa ingin tahu</span><Ikon nama="bawah" ukuran={16} /></div>
               <ul className="contoh" aria-label="Contoh pertanyaan">
                 {CONTOH.map((c) => (
-                  <li key={c}>
-                    <button type="button" onClick={() => kirim(c)} disabled={!id}>
-                      {c}
-                    </button>
-                  </li>
+                  <li key={c.teks}><button type="button" onClick={() => kirim(c.teks)} disabled={!id}><span className="contoh-ikon"><Ikon nama={c.ikon} ukuran={19} /></span><span><strong>{c.judul}</strong><small>{c.teks}</small></span><Ikon nama="panah" ukuran={16} /></button></li>
                 ))}
               </ul>
             </div>
-            <footer className="pembuka-kaki">
-              <p>
-                <strong>Fakta, Uraian, dan Literasi Indikator.</strong> Facts, Understanding, Literacy, Insights.
-              </p>
-              <p>
-                Fuli bisa keliru. Periksa angka penting di sumbernya, atau{" "}
-                <a href={TAUTAN_WA} target="_blank" rel="noopener noreferrer">
-                  hubungi petugas BPS
-                </a>
-                .
-              </p>
-            </footer>
+            <footer className="pembuka-kaki"><span>Angka punya cerita. Mulai dengan bertanya.</span><p>Fuli bisa keliru. Periksa kembali angka penting di sumbernya.</p></footer>
           </main>
         ) : (
           <main className="ruang">
+            <div className="ruang-judul"><span className="sapa-tanda" aria-hidden="true">✳</span><div><strong>{utas.find((u) => u.id === utasAktif)?.title || "Percakapan bersama Fuli"}</strong><span>Fakta, sumber, dan penjelasan dalam satu percakapan.</span></div></div>
             <div className="gulir" ref={gulir} onScroll={padaGulir}>
               <div className="kolom">
                 {memuat && pesan.length === 0 && <p className="teks-redup memuat">Membuka percakapan.</p>}
@@ -633,7 +644,8 @@ export function FuliApp() {
                   </motion.button>
                 )}
               </AnimatePresence>
-              <Pengetik kirim={kirim} henti={hentikan} mengalir={mengalir} tanda="Tanyakan lagi" />
+              <Pengetik kirim={kirim} henti={hentikan} mengalir={mengalir} siap={!!id} tanda="Tanyakan lebih lanjut…" />
+              <p className="catatan-jawaban">Fuli bisa keliru. Periksa angka penting di sumbernya.</p>
             </div>
             </div>
           </main>
@@ -644,6 +656,7 @@ export function FuliApp() {
             <motion.div className="laci-latar" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setLaci(false)}>
               <motion.aside
                 className="laci"
+                ref={dialogRiwayat}
                 role="dialog"
                 aria-modal="true"
                 aria-label="Riwayat percakapan"
