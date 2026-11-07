@@ -2,7 +2,10 @@
 # Fuli
 
 Fuli (Fakta, Uraian, dan Literasi Indikator) adalah muka chat data BPS Maluku Utara di
-`https://fuli.bpsmalut.com`. Hanya chat. Pengganti nama MALIKA; fuli = jala merah pembungkus biji pala.
+`https://fuli.bpsmalut.com`. Pengganti nama MALIKA; fuli = jala merah pembungkus biji pala.
+
+Sejak 7 November 2026 (commit `b0f748d`): `/` = halaman muka 3D, `/tanya` = ruang tanya (chat).
+Aplikasi terpasang (manifest `start_url`) membuka `/tanya`.
 
 ## Di mana
 
@@ -22,6 +25,12 @@ Fuli (Fakta, Uraian, dan Literasi Indikator) adalah muka chat data BPS Maluku Ut
 - Warna dan ukuran hanya dari `src/styles/tokens.css`. Grafik memakai `--seri-1..6` (lolos validator terang dan gelap); jangan tambah warna seri.
 - Tanda persen hanya bila sumber menyebutnya (`formatTerbukti` di `src/lib/olah.ts`). Rentang 0 sampai 100 bukan bukti: IPM adalah indeks.
 - Adegan 3D wajib punya jalan-mundur: WebGL mati atau gerak dikurangi tetap menampilkan tanda statis.
+- Halaman muka ada di `src/app/page.tsx` + `src/components/beranda/` (markup statis, `hidupkan.ts`, `adeganBeranda.ts`
+  dengan `@ts-nocheck`, `beranda.css`). Tokennya di `tokens.css` blok `:root:has(.beranda)`: selalu gelap, tidak ikut tema ruang tanya.
+  `globals.css` hanya dimuat oleh `/tanya`; jangan dipindah kembali ke layout, gayanya akan menimpa halaman muka.
+- Pertanyaan dari halaman muka dibawa ke `/tanya` lewat `sessionStorage` kunci `fuli_tanya_awal`, dikirim sekali di utas baru.
+  Jangan diganti parameter URL: tautan tidak boleh bisa memicu kiriman ke model.
+- CSP (`next.config.ts`) hanya mengizinkan sumber sendiri: three dari npm, huruf dari fontsource, tanpa CDN.
 
 ## Memasang
 
@@ -36,7 +45,9 @@ ssh app 'sudo -u app-public env HOME=/home/app-public bash -c "cd /opt/public/fu
 ## Sebelum menyatakan selesai
 
 `npx tsc --noEmit` dan `npx next build` lolos, lalu uji di Chromium sungguhan: jawaban mengalir, muat ulang memulihkan riwayat,
-ponsel 390 px tanpa geser samping, WebGL mati. Agen dibuktikan dari selisih `agent.turn_context` di
+ponsel 390 px tanpa geser samping, WebGL mati. Untuk halaman muka juga: kirim dari `/` sampai ke `/tanya` (tepat satu POST stream).
+Bila `ops` kehabisan memori, Chromium uji di sana tidak sempat memuat; jalankan uji di `app` (`/usr/bin/chromium`, Node 22) terhadap
+salinan uji di port lokal. Agen dibuktikan dari selisih `agent.turn_context` di
 `ops:/var/lib/private/hermes/<profil>/logs/agent.log`, bukan dari kode.
 
 Bila jawaban berupa pesan gagal atau kosong, periksa dulu 402 kredit di `ssh app 'sudo journalctl -u 9router'` sebelum mencurigai Fuli.
