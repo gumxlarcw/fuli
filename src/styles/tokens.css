@@ -172,3 +172,64 @@
   --seri-5: #9a70e0;
   --seri-6: #d85f98;
 }
+
+/*
+ * Halaman muka (/): selalu panggung malam, apa pun pilihan tema ruang tanya,
+ * dengan satu pita terang "daging buah" untuk contoh percakapan.
+ * Hanya berlaku bila halaman memuat elemen .beranda; /tanya tidak terpengaruh.
+ */
+:root:has(.beranda) {
+  color-scheme: dark;
+
+  /* Panggung: token gelap Fuli */
+  --latar: #1f0d10;
+  --latar-dalam: #140709;
+  --permukaan: #2c1418;
+  --garis: #5a343a;
+  --tinta: #f3f1d7;
+  --tinta-2: #cdc1ab;
+  --aksen: #ff7a7c;
+  --aksen-isi: #d8202f;
+  --aksen-tekan: #ef3a46;
+  --di-aksen: #fff6e9;
+  --orbit: #e3c388;
+  --panggung-gelap: #4e0a19;
+  --panggung-terang: #be1128;
+
+  /* Pita daging buah: token terang Fuli */
+  --buah: #edefd2;
+  --buah-permukaan: #f8f9e8;
+  --buah-2: #e0e3bc;
+  --buah-garis: #c3c697;
+  --biji: #2a1014;
+  --biji-2: #5b4044;
+  --fuli: #be1128;
+  --fuli-tekan: #8f0a1e;
+
+  /* Tanda Fuli di atas panggung gelap */
+  --tanda-biji: #f3f1d7;
+  --tanda-jala: #d8202f;
+  --tanda-tangkai: #cdc1ab;
+
+  /* Ukuran huruf halaman muka; keluarga huruf mengikuti token ruang tanya */
+  --uk-label: 0.8125rem;
+  --uk-kecil: 0.9375rem;
+  --uk-teks: 1.0625rem;
+  --uk-lead: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem);
+  --uk-h2: clamp(2.1rem, 1.3rem + 2.6vw, 3.6rem);
+  --uk-h1: clamp(3rem, 1rem + 5.4vw, 6rem);
+  --uk-huruf: clamp(5rem, 2.6rem + 8vw, 10.5rem);
+
+  /* Jarak dan bentuk */
+  --sisi-kiri: max(clamp(16px, 4.2vw, 72px), env(safe-area-inset-left, 0px));
+  --sisi-kanan: max(clamp(16px, 4.2vw, 72px), env(safe-area-inset-right, 0px));
+  --r-besar: 26px;
+  --r-pesan: 22px 22px 6px 22px;
+  --serat: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.beranda .pita {
+  --tanda-biji: #2a1014;
+  --tanda-jala: #be1128;
+  --tanda-tangkai: #6a3532;
+}

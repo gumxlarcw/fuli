@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/piazzolla/index.css";
 import "@fontsource-variable/source-sans-3/index.css";
 import "@/styles/tokens.css";
-import "./globals.css";
+// globals.css (ruang tanya) dimuat oleh /tanya; halaman muka memakai beranda.css sendiri.
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://fuli.bpsmalut.com"),

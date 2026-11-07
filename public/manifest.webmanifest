@@ -3,7 +3,7 @@
   "short_name": "Fuli",
   "description": "Tanya angka Maluku Utara. Fakta, Uraian, dan Literasi Indikator dari BPS Provinsi Maluku Utara.",
   "lang": "id",
-  "start_url": "/",
+  "start_url": "/tanya",
   "display": "standalone",
   "background_color": "#EDEFD2",
   "theme_color": "#BE1128",

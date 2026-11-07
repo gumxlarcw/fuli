@@ -35,6 +35,8 @@ const URUT_TAHAP: Record<string, number> = {
 };
 
 const KUNCI_UTAS = "fuli_utas_aktif";
+// Pertanyaan yang diketik di halaman muka (/), dibawa sekali lewat sessionStorage.
+const KUNCI_TANYA_AWAL = "fuli_tanya_awal";
 const KUNCI_TEMA = "fuli_tema";
 const POLA_TERIMA_KASIH = /terima\s*kasih|makasih|matur\s*nuwun|thanks|thank\s*you|\bthx\b|\bty\b/i;
 
@@ -227,6 +229,7 @@ export function FuliApp() {
   const lekat = useRef(true);
   const tahapUrut = useRef(0);
   const utasRef = useRef<number | null>(null);
+  const tanyaAwal = useRef<string | null>(null);
   utasRef.current = utasAktif;
 
   const modus = pesan.length === 0 && !memuat ? "hero" : "chat";
@@ -370,10 +373,15 @@ export function FuliApp() {
     let hidup = true;
     siapkanIdentitas().then((i) => {
       if (!hidup) return;
+      const awal = baca(KUNCI_TANYA_AWAL, "sesi")?.trim().slice(0, 1000) || null;
+      tulis(KUNCI_TANYA_AWAL, null, "sesi");
+      tanyaAwal.current = awal;
       setId(i);
       void muatUlangUtas(i);
       const tersimpan = Number(baca(KUNCI_UTAS, "sesi"));
-      if (tersimpan > 0) void bukaUtas(i, tersimpan);
+      // Pertanyaan dari halaman muka membuka utas baru, bukan menyambung utas terakhir.
+      if (awal) tulis(KUNCI_UTAS, null, "sesi");
+      else if (tersimpan > 0) void bukaUtas(i, tersimpan);
     });
     return () => {
       hidup = false;
@@ -499,6 +507,14 @@ export function FuliApp() {
     },
     [id, mengalir, muatSaran, muatUlangUtas],
   );
+
+  // Kirim sekali pertanyaan bawaan halaman muka begitu identitas siap.
+  useEffect(() => {
+    if (!id || mengalir || !tanyaAwal.current) return;
+    const t = tanyaAwal.current;
+    tanyaAwal.current = null;
+    void kirim(t);
+  }, [id, mengalir, kirim]);
 
   const hentikan = () => {
     henti.current?.abort();
