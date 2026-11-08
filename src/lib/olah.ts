@@ -169,13 +169,14 @@ export function keTsv(kolom: string[], baris: Array<Record<string, unknown>>) {
   return [kolom.join("\t"), ...baris.map((r) => kolom.map((c) => sel(r[c])).join("\t"))].join("\n");
 }
 
-const BASIS_PORTAL = "https://malika.bpsmalut.com";
-
-/** Hanya http, https, dan mailto yang boleh jadi tautan. Tautan relatif mengarah ke portal data. */
+/**
+ * Hanya http, https, dan mailto yang boleh jadi tautan.
+ * Tautan relatif dari backend (mis. /data?source_id=) menunjuk halaman portal lama yang ditutup
+ * 8 Nov 2026; Fuli hanya chat, jadi tautan seperti itu ditampilkan sebagai teks biasa.
+ */
 export function tautanAman(href?: string | null): string | null {
   const s = String(href || "").trim();
   if (!s) return null;
-  if (s.startsWith("/") && !s.startsWith("//")) return BASIS_PORTAL + s;
   return /^(https?:\/\/|mailto:)/i.test(s) ? s : null;
 }
 
