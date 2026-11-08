@@ -7,6 +7,11 @@ Fuli (Fakta, Uraian, dan Literasi Indikator) adalah muka chat data BPS Maluku Ut
 Sejak 7 November 2026 (commit `b0f748d`): `/` = halaman muka 3D, `/tanya` = ruang tanya (chat).
 Aplikasi terpasang (manifest `start_url`) membuka `/tanya`.
 
+**Sejak 8 November 2026 (perintah pemilik): portal lama `malika.bpsmalut.com` DITUTUP dari publik** (ingress edge dicabut;
+pds-frontend tetap hidup untuk akses lokal di app `127.0.0.1:6060` / tailnet `100.77.217.52:6060`). Fuli hanya chat: jangan
+memindahkan halaman portal (data, dashboard, peta tematik, BRS, publikasi, pencarian) ke Fuli, dan jangan menautkan ke portal.
+Tautan relatif dari backend (mis. `candidates[].href = /data?source_id=`) ditampilkan sebagai teks (`tautanAman`, commit `233d687`).
+
 ## Di mana
 
 | Apa | Di mana |
