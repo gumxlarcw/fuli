@@ -1,9 +1,9 @@
-// Fuli: chat data BPS Maluku Utara. Hanya melayani edge lewat ufw; bind ke alamat LAN app.
+// Fuli: chat data BPS Maluku Utara. Bind produksi lewat HOST; jangan tulis alamat LAN di berkas ini.
 module.exports = {
   apps: [{
     name: 'fuli',
     script: './node_modules/.bin/next',
-    args: 'start -H 10.82.7.8 -p 6070',
+    args: `start -H ${process.env.HOST || "127.0.0.1"} -p ${process.env.PORT || "6070"}`,
     interpreter: 'none',
     cwd: '/opt/public/fuli',
     exec_mode: 'fork',

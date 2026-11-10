@@ -7,7 +7,8 @@ import type { NextRequest } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-const BACKEND = (process.env.BACKEND_BASE_URL || "http://100.77.217.52:5000").replace(/\/$/, "");
+// Alamat sungguhan hanya dari lingkungan. Jangan menulis alamat Tailscale atau LAN di sini.
+const BACKEND = (process.env.BACKEND_BASE_URL || "http://127.0.0.1:5000").replace(/\/$/, "");
 
 const IZIN: Array<[string, RegExp]> = [
   ["POST", /^chat\/identity$/],

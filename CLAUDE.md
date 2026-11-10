@@ -8,7 +8,7 @@ Sejak 7 November 2026 (commit `b0f748d`): `/` = halaman muka 3D, `/tanya` = ruan
 Aplikasi terpasang (manifest `start_url`) membuka `/tanya`.
 
 **Sejak 8 November 2026 (perintah pemilik): portal lama `malika.bpsmalut.com` DITUTUP dari publik** (ingress edge dicabut;
-pds-frontend tetap hidup untuk akses lokal di app `127.0.0.1:6060` / tailnet `100.77.217.52:6060`). Fuli hanya chat: jangan
+pds-frontend tetap hidup untuk akses lokal di loopback dan tailnet; alamatnya tidak ditulis di repo ini). Fuli hanya chat: jangan
 memindahkan halaman portal (data, dashboard, peta tematik, BRS, publikasi, pencarian) ke Fuli, dan jangan menautkan ke portal.
 Tautan relatif dari backend (mis. `candidates[].href = /data?source_id=`) ditampilkan sebagai teks (`tautanAman`, commit `233d687`).
 
@@ -16,9 +16,9 @@ Tautan relatif dari backend (mis. `candidates[].href = /data?source_id=`) ditamp
 
 | Apa | Di mana |
 |---|---|
-| Aplikasi hidup | `app:/opt/public/fuli`, milik `app-public`, PM2 `fuli`, bind `10.82.7.8:6070` |
+| Aplikasi hidup | `app:/opt/public/fuli`, milik `app-public`, PM2 `fuli`, bind lewat `HOST` (bukan alamat LAN di repo) |
 | Git | `/var/lib/git-fleet/public_fuli.git`; sumber kerja `ops:/home/ops/kerja/fuli-20261105/app` |
-| Jalan masuk | `edge:/etc/cloudflared/config.yml`, ufw `6070/tcp` hanya dari `10.82.7.9` |
+| Jalan masuk | `edge:/etc/cloudflared/config.yml`, ufw port aplikasi hanya dari mesin edge |
 | Otak | `pds-backend` (`app:/opt/internal/project-data-strategis/backend`, tailnet `:5000`), agen Hermes `pds-*` di `ops` |
 | Rahasia | `.env.production.local` mode 600, hanya `BACKEND_BASE_URL`. Tidak ada kunci di peramban |
 
